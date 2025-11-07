@@ -14,15 +14,17 @@ from aiogram.types import (
     Document,
     ReplyKeyboardRemove,
 )
+from aiohttp import web
 
 # -----------------------------------------------------------------------------
 # Конфігурація: читаємо токен і параметри підключення до БД
 # -----------------------------------------------------------------------------
 
-# На Railway ці змінні середовища будуть доступні автоматично.
+# На Render ці змінні середовища будуть доступні автоматично.
 # Для локального тестування їх треба задати вручну або через .env файл.
 BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 DATABASE_URL = os.getenv("DATABASE_URL")
+PORT = int(os.getenv("PORT", 10000))  # Render передає PORT через змінну середовища
 
 if not DATABASE_URL:
     # Запасний варіант, якщо DATABASE_URL не задано,
@@ -296,6 +298,25 @@ async def incorrect_upload(msg: Message):
     await msg.answer("Очікується файл. Будь ласка, надішліть документ.")
 
 # -----------------------------------------------------------------------------
+# HTTP сервер для Render (щоб сервіс не падав через відсутність відкритого порту)
+# -----------------------------------------------------------------------------
+async def health_check(request):
+    """Простий health check endpoint для Render"""
+    return web.Response(text="Bot is running!")
+
+async def start_http_server():
+    """Запускає простий HTTP сервер на порту, який очікує Render"""
+    app = web.Application()
+    app.router.add_get('/', health_check)
+    app.router.add_get('/health', health_check)
+    
+    runner = web.AppRunner(app)
+    await runner.setup()
+    site = web.TCPSite(runner, '0.0.0.0', PORT)
+    await site.start()
+    print(f"HTTP сервер запущено на порту {PORT}")
+
+# -----------------------------------------------------------------------------
 # Головна функція запуску бота
 # -----------------------------------------------------------------------------
 async def main():
@@ -319,6 +340,9 @@ async def main():
     bot = Bot(token=BOT_TOKEN)
     dp = Dispatcher(storage=MemoryStorage(), pool=pool) # Передаємо пул у диспетчер
     dp.include_router(router)
+
+    # Запускаємо HTTP сервер для Render
+    await start_http_server()
 
     print("Бот запускається...")
     await dp.start_polling(bot)
