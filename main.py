@@ -58,24 +58,24 @@ class AdminFlow(StatesGroup):
 # -----------------------------------------------------------------------------
 def kb_roles() -> ReplyKeyboardMarkup:
     return ReplyKeyboardMarkup(
-        keyboard=[[KeyboardButton(text=" 👑  Я Адміністратор"), KeyboardButton(text=" 🎓  Я Користувач")]],
+        keyboard=[[KeyboardButton(text=" 👑  Я Адміністратор"), KeyboardButton(text=" 🎓  Я Користувач")]],
         resize_keyboard=True,
         one_time_keyboard=True,
     )
 def kb_main_menu() -> ReplyKeyboardMarkup:
     return ReplyKeyboardMarkup(
         keyboard=[
-            [KeyboardButton(text=" 📚  Навчальні матеріали")],
-            [KeyboardButton(text=" 🧪  Тести")],
-            [KeyboardButton(text=" 🚪  Вийти")],
+            [KeyboardButton(text=" 📚  Навчальні матеріали")],
+            [KeyboardButton(text=" 🧪  Тести")],
+            [KeyboardButton(text=" 🚪  Вийти")],
         ],
         resize_keyboard=True,
     )
 def kb_materials_menu() -> ReplyKeyboardMarkup:
     return ReplyKeyboardMarkup(
         keyboard=[
-            [KeyboardButton(text=" 📤  Завантажити матеріал"), KeyboardButton(text=" 👀  Переглянути матеріали")],
-            [KeyboardButton(text=" 🗑  Видалити матеріал"), KeyboardButton(text=" 🏠  Головне меню")],
+            [KeyboardButton(text=" 📤  Завантажити матеріал"), KeyboardButton(text=" 👀  Переглянути матеріали")],
+            [KeyboardButton(text=" 🗑  Видалити матеріал"), KeyboardButton(text=" 🏠  Головне меню")],
         ],
         resize_keyboard=True,
     )
@@ -83,9 +83,9 @@ def kb_tests_menu() -> ReplyKeyboardMarkup:
     """Оновлена клавіатура тестів з кращим відображенням кнопок"""
     return ReplyKeyboardMarkup(
         keyboard=[
-            [KeyboardButton(text=" 📥  Завантажити тест"), KeyboardButton(text=" 👁  Переглянути тести")],
-            [KeyboardButton(text=" 🗑  Видалити тест"), KeyboardButton(text=" 🤖  Згенерувати тест ШІ")],
-            [KeyboardButton(text=" 🏠  Головне меню")], # На окремому рядку
+            [KeyboardButton(text=" 📥  Завантажити тест"), KeyboardButton(text=" 👁  Переглянути тести")],
+            [KeyboardButton(text=" 🗑  Видалити тест"), KeyboardButton(text=" 🤖  Згенерувати тест ШІ")],
+            [KeyboardButton(text=" 🏠  Головне меню")], # На окремому рядку
         ],
         resize_keyboard=True,
     )
@@ -95,7 +95,7 @@ def kb_ai_test_menu() -> ReplyKeyboardMarkup:
         keyboard=[
             [KeyboardButton(text="Згенерувати 10 питань"), KeyboardButton(text="Згенерувати 20 питань")],
             [KeyboardButton(text="Згенерувати 30 питань"), KeyboardButton(text="Згенерувати 40 питань")],
-            [KeyboardButton(text=" 🏠  Головне меню")],
+            [KeyboardButton(text=" 🏠  Головне меню")],
         ],
         resize_keyboard=True,
     )
@@ -105,7 +105,7 @@ def kb_ai_test_actions() -> ReplyKeyboardMarkup:
         keyboard=[
             [KeyboardButton(text="▶️ Пройти тест (Admin)")],
             [KeyboardButton(text="📤 Направити Користувачам")],
-            [KeyboardButton(text="🔄 Оновити тест")], 
+            [KeyboardButton(text="🔄 Оновити тест")],
             [KeyboardButton(text="↩️ Повернутися в Меню тестів")],
         ],
         resize_keyboard=True,
@@ -114,8 +114,8 @@ def kb_delete_confirmation(file_id: int) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [
-                InlineKeyboardButton(text=" ✅   Так ,  видалити ", callback_data=f"delete_{file_id}"),
-                InlineKeyboardButton(text=" ❌   Скасувати ", callback_data="cancel_delete"),
+                InlineKeyboardButton(text=" ✅   Так ,  видалити ", callback_data=f"delete_{file_id}"),
+                InlineKeyboardButton(text=" ❌   Скасувати ", callback_data="cancel_delete"),
             ]
         ]
     )
@@ -213,7 +213,7 @@ async def download_file_content(bot: Bot, file_id: str) -> str:
 async def generate_test_questions(materials_content: str, num_questions: int) -> str:
     """Генерує тестові питання на основі матеріалів через OpenAI API"""
     if not openai_client:
-        return " ❌  OpenAI API  не   налаштовано .  Додайте  OPENAI_API_KEY  у   змінні   середовища ."
+        return " ❌  OpenAI API  не   налаштовано .  Додайте  OPENAI_API_KEY  у   змінні   середовища ."
 
     try:
         prompt = f"""На основі наступних навчальних матеріалів створи {num_questions} тестових питань з 4 варіантами відповідей (A, B, C, D).
@@ -240,7 +240,7 @@ D) [варіант]
 
         return response.choices[0].message.content
     except Exception as e:
-        return f" ❌   Помилка   при   генерації   тесту : {str(e)}"
+        return f" ❌   Помилка   при   генерації   тесту : {str(e)}"
 # -----------------------------------------------------------------------------
 # Обробники повідомлень (хендлери)
 # -----------------------------------------------------------------------------
@@ -253,11 +253,11 @@ async def cmd_start(msg: Message, state: FSMContext):
         reply_markup=kb_roles(),
     )
     await state.set_state(AdminFlow.choose_role)
-@router.message(StateFilter(AdminFlow.choose_role), F.text == " 👑  Я Адміністратор")
+@router.message(StateFilter(AdminFlow.choose_role), F.text == " 👑  Я Адміністратор")
 async def choose_admin(msg: Message, state: FSMContext):
     await msg.answer("Введіть назву вашої організації:", reply_markup=ReplyKeyboardRemove())
     await state.set_state(AdminFlow.waiting_org_name)
-@router.message(StateFilter(AdminFlow.choose_role), F.text == " 🎓  Я Користувач")
+@router.message(StateFilter(AdminFlow.choose_role), F.text == " 🎓  Я Користувач")
 async def choose_user(msg: Message, state: FSMContext):
     await msg.answer("Цей режим поки що в розробці. Будь ласка, оберіть роль адміністратора.")
 @router.message(StateFilter(AdminFlow.waiting_org_name))
@@ -284,7 +284,7 @@ async def got_new_password(msg: Message, state: FSMContext, pool: asyncpg.Pool):
     async with pool.acquire() as con:
         org = await create_org(con, org_name, password)
     await state.update_data(org_id=org["id"])
-    await msg.answer(f" ✅   Організацію  '{org_name}'  створено !  Вхід   виконано .", reply_markup=kb_main_menu())
+    await msg.answer(f" ✅   Організацію  '{org_name}'  створено !  Вхід   виконано .", reply_markup=kb_main_menu())
     await state.set_state(AdminFlow.main_menu)
 @router.message(StateFilter(AdminFlow.waiting_admin_pwd_existing))
 async def got_existing_password(msg: Message, state: FSMContext, pool: asyncpg.Pool):
@@ -294,27 +294,27 @@ async def got_existing_password(msg: Message, state: FSMContext, pool: asyncpg.P
     async with pool.acquire() as con:
         org = await get_org(con, org_name)
     if org and await check_password(org, password):
-        await msg.answer(f" ✅   Вхід   виконано !  Вітаємо   в   організації  '{org_name}'.", reply_markup=kb_main_menu())
+        await msg.answer(f" ✅   Вхід   виконано !  Вітаємо   в   організації  '{org_name}'.", reply_markup=kb_main_menu())
         await state.set_state(AdminFlow.main_menu)
     else:
-        await msg.answer(" ❌   Неправильний   пароль .  Спробуйте   ще   раз   або   почніть   з   початку  /start.")
+        await msg.answer(" ❌   Неправильний   пароль .  Спробуйте   ще   раз   або   почніть   з   початку  /start.")
 # --- Головне меню ---
-@router.message(StateFilter(AdminFlow.main_menu), F.text == " 📚  Навчальні матеріали")
+@router.message(StateFilter(AdminFlow.main_menu), F.text == " 📚  Навчальні матеріали")
 async def show_materials_menu(msg: Message, state: FSMContext):
     await msg.answer("Меню навчальних матеріалів:", reply_markup=kb_materials_menu())
     await state.set_state(AdminFlow.materials_menu)
-@router.message(StateFilter(AdminFlow.main_menu), F.text == " 🧪  Тести")
+@router.message(StateFilter(AdminFlow.main_menu), F.text == " 🧪  Тести")
 async def show_tests_menu(msg: Message, state: FSMContext):
     await msg.answer("Меню тестів:", reply_markup=kb_tests_menu())
     await state.set_state(AdminFlow.tests_menu)
-@router.message(StateFilter(AdminFlow.main_menu), F.text == " 🚪  Вийти")
+@router.message(StateFilter(AdminFlow.main_menu), F.text == " 🚪  Вийти")
 async def exit_admin_mode(msg: Message, state: FSMContext):
     await state.clear()
     await msg.answer("Ви вийшли з режиму адміністратора. Щоб почати знову, введіть /start", reply_markup=ReplyKeyboardRemove())
     await msg.answer("Оберіть свою роль:", reply_markup=kb_roles())
     await state.set_state(AdminFlow.choose_role)
 # --- Меню матеріалів ---
-@router.message(StateFilter(AdminFlow.materials_menu), F.text == " 📤  Завантажити матеріал")
+@router.message(StateFilter(AdminFlow.materials_menu), F.text == " 📤  Завантажити матеріал")
 async def request_material_upload(msg: Message, state: FSMContext, pool: asyncpg.Pool):
     data = await state.get_data()
     org_id = data.get("org_id")
@@ -327,7 +327,7 @@ async def request_material_upload(msg: Message, state: FSMContext, pool: asyncpg
 
     await msg.answer("Будь ласка, надішліть файл (документ, PDF, тощо) як вкладення.")
     await state.set_state(AdminFlow.awaiting_material_upload)
-@router.message(StateFilter(AdminFlow.materials_menu), F.text == " 👀  Переглянути матеріали")
+@router.message(StateFilter(AdminFlow.materials_menu), F.text == " 👀  Переглянути матеріали")
 async def view_materials(msg: Message, state: FSMContext, pool: asyncpg.Pool, bot: Bot):
     data = await state.get_data()
     org_id = data.get("org_id")
@@ -335,21 +335,21 @@ async def view_materials(msg: Message, state: FSMContext, pool: asyncpg.Pool, bo
     files = await get_files_by_type(pool, org_id, "material")
 
     if not files:
-        await msg.answer(" 📭  Матеріали відсутні.")
+        await msg.answer(" 📭  Матеріали відсутні.")
         return
 
-    await msg.answer(f" 📚  Знайдено матеріалів: {len(files)}")
+    await msg.answer(f" 📚  Знайдено матеріалів: {len(files)}")
 
     for file in files:
         try:
             await bot.send_document(
                 chat_id=msg.chat.id,
                 document=file["file_id"],
-                caption=f" 📄  {file['filename']}\n 📅  Завантажено: {file['uploaded_at'].strftime('%d.%m.%Y %H:%M')}"
+                caption=f" 📄  {file['filename']}\n 📅  Завантажено: {file['uploaded_at'].strftime('%d.%m.%Y %H:%M')}"
             )
         except Exception as e:
-            await msg.answer(f" ❌   Помилка   при   відправці  файлу '{file['filename']}': {e}")
-@router.message(StateFilter(AdminFlow.materials_menu), F.text == " 🗑  Видалити матеріал")
+            await msg.answer(f" ❌   Помилка   при   відправці  файлу '{file['filename']}': {e}")
+@router.message(StateFilter(AdminFlow.materials_menu), F.text == " 🗑  Видалити матеріал")
 async def delete_material_request(msg: Message, state: FSMContext, pool: asyncpg.Pool):
     data = await state.get_data()
     org_id = data.get("org_id")
@@ -357,20 +357,20 @@ async def delete_material_request(msg: Message, state: FSMContext, pool: asyncpg
     files = await get_files_by_type(pool, org_id, "material")
 
     if not files:
-        await msg.answer(" 📭  Матеріали відсутні.")
+        await msg.answer(" 📭  Матеріали відсутні.")
         return
 
     for file in files:
         await msg.answer(
-            f" 📄  {file['filename']}\n 📅  Завантажено: {file['uploaded_at'].strftime('%d.%m.%Y %H:%M')}\n\nВидалити цей файл?",
+            f" 📄  {file['filename']}\n 📅  Завантажено: {file['uploaded_at'].strftime('%d.%m.%Y %H:%M')}\n\nВидалити цей файл?",
             reply_markup=kb_delete_confirmation(file["id"])
         )
-@router.message(StateFilter(AdminFlow.materials_menu), F.text == " 🏠  Головне меню")
+@router.message(StateFilter(AdminFlow.materials_menu), F.text == " 🏠  Головне меню")
 async def back_to_main_1(msg: Message, state: FSMContext):
     await msg.answer("Головне меню:", reply_markup=kb_main_menu())
     await state.set_state(AdminFlow.main_menu)
 # --- Меню тестів ---
-@router.message(StateFilter(AdminFlow.tests_menu), F.text == " 📥  Завантажити тест")
+@router.message(StateFilter(AdminFlow.tests_menu), F.text == " 📥  Завантажити тест")
 async def request_test_upload(msg: Message, state: FSMContext, pool: asyncpg.Pool):
     data = await state.get_data()
     org_id = data.get("org_id")
@@ -383,7 +383,7 @@ async def request_test_upload(msg: Message, state: FSMContext, pool: asyncpg.Poo
 
     await msg.answer("Будь ласка, надішліть файл (документ, PDF, тощо) як вкладення.")
     await state.set_state(AdminFlow.awaiting_test_upload)
-@router.message(StateFilter(AdminFlow.tests_menu), F.text == " 👁  Переглянути тести")
+@router.message(StateFilter(AdminFlow.tests_menu), F.text == " 👁  Переглянути тести")
 async def view_tests(msg: Message, state: FSMContext, pool: asyncpg.Pool, bot: Bot):
     data = await state.get_data()
     org_id = data.get("org_id")
@@ -391,21 +391,21 @@ async def view_tests(msg: Message, state: FSMContext, pool: asyncpg.Pool, bot: B
     files = await get_files_by_type(pool, org_id, "test")
 
     if not files:
-        await msg.answer(" 📭  Тести відсутні.")
+        await msg.answer(" 📭  Тести відсутні.")
         return
 
-    await msg.answer(f" 🧪  Знайдено тестів: {len(files)}")
+    await msg.answer(f" 🧪  Знайдено тестів: {len(files)}")
 
     for file in files:
         try:
             await bot.send_document(
                 chat_id=msg.chat.id,
                 document=file["file_id"],
-                caption=f" 📄  {file['filename']}\n 📅  Завантажено: {file['uploaded_at'].strftime('%d.%m.%Y %H:%M')}"
+                caption=f" 📄  {file['filename']}\n 📅  Завантажено: {file['uploaded_at'].strftime('%d.%m.%Y %H:%M')}"
             )
         except Exception as e:
-            await msg.answer(f" ❌   Помилка   при   відправці   файлу  '{file['filename']}': {e}")
-@router.message(StateFilter(AdminFlow.tests_menu), F.text == " 🗑  Видалити тест")
+            await msg.answer(f" ❌   Помилка   при   відправці   файлу  '{file['filename']}': {e}")
+@router.message(StateFilter(AdminFlow.tests_menu), F.text == " 🗑  Видалити тест")
 async def delete_test_request(msg: Message, state: FSMContext, pool: asyncpg.Pool):
     data = await state.get_data()
     org_id = data.get("org_id")
@@ -413,23 +413,23 @@ async def delete_test_request(msg: Message, state: FSMContext, pool: asyncpg.Poo
     files = await get_files_by_type(pool, org_id, "test")
 
     if not files:
-        await msg.answer(" 📭  Тести відсутні.")
+        await msg.answer(" 📭  Тести відсутні.")
         return
 
     for file in files:
         await msg.answer(
-            f" 📄  {file['filename']}\n 📅  Завантажено: {file['uploaded_at'].strftime('%d.%m.%Y %H:%M')}\n\nВидалити цей файл?",
+            f" 📄  {file['filename']}\n 📅  Завантажено: {file['uploaded_at'].strftime('%d.%m.%Y %H:%M')}\n\nВидалити цей файл?",
             reply_markup=kb_delete_confirmation(file["id"])
         )
-@router.message(StateFilter(AdminFlow.tests_menu), F.text == " 🤖  Згенерувати тест ШІ")
+@router.message(StateFilter(AdminFlow.tests_menu), F.text == " 🤖  Згенерувати тест ШІ")
 async def show_ai_test_menu(msg: Message, state: FSMContext):
     if not openai_client:
-        await msg.answer(" ❌  OpenAI API  не   налаштовано .  Зверніться   до   адміністратора   системи .")
+        await msg.answer(" ❌  OpenAI API  не   налаштовано .  Зверніться   до   адміністратора   системи .")
         return
 
-    await msg.answer(" 🤖  Оберіть кількість питань для генерації:", reply_markup=kb_ai_test_menu())
+    await msg.answer(" 🤖  Оберіть кількість питань для генерації:", reply_markup=kb_ai_test_menu())
     await state.set_state(AdminFlow.ai_test_menu)
-@router.message(StateFilter(AdminFlow.tests_menu), F.text == " 🏠  Головне меню")
+@router.message(StateFilter(AdminFlow.tests_menu), F.text == " 🏠  Головне меню")
 async def back_to_main_2(msg: Message, state: FSMContext):
     await msg.answer("Головне меню:", reply_markup=kb_main_menu())
     await state.set_state(AdminFlow.main_menu)
@@ -447,7 +447,7 @@ async def generate_ai_test(msg: Message, state: FSMContext, pool: asyncpg.Pool, 
     elif "40" in text:
         num_questions = 40
     else:
-        await msg.answer(" ❌   Невідома   кількість   питань .")
+        await msg.answer(" ❌   Невідома   кількість   питань .")
         return
 
     data = await state.get_data()
@@ -457,10 +457,10 @@ async def generate_ai_test(msg: Message, state: FSMContext, pool: asyncpg.Pool, 
     materials = await get_files_by_type(pool, org_id, "material")
 
     if not materials:
-        await msg.answer(" ❌   Спочатку   завантажте   навчальні   матеріали !")
+        await msg.answer(" ❌   Спочатку   завантажте   навчальні   матеріали !")
         return
 
-    await msg.answer(f" ⏳   Генерую  {num_questions} питань на основі ваших матеріалів... Це може зайняти до 30 секунд.")
+    await msg.answer(f" ⏳   Генерую  {num_questions} питань на основі ваших матеріалів... Це може зайняти до 30 секунд.")
 
     # Завантажуємо вміст матеріалів
     materials_content = ""
@@ -469,7 +469,7 @@ async def generate_ai_test(msg: Message, state: FSMContext, pool: asyncpg.Pool, 
         materials_content += content + "\n\n"
 
     if not materials_content.strip():
-        await msg.answer(" ❌   Не   вдалося   прочитати   вміст   матеріалів .  Переконайтеся ,  що   файли   містять   текст .")
+        await msg.answer(" ❌   Не   вдалося   прочитати   вміст   матеріалів .  Переконайтеся ,  що   файли   містять   текст .")
         return
 
     # Генеруємо тест
@@ -484,7 +484,7 @@ async def generate_ai_test(msg: Message, state: FSMContext, pool: asyncpg.Pool, 
         await bot.send_document(
             chat_id=msg.chat.id,
             document=FSInputFile(temp_path, filename=f"Згенерований_тест_{num_questions}_питань.txt"),
-            caption=f" ✅  Тест з {num_questions} питань успішно згенеровано!"
+            caption=f" ✅  Тест з {num_questions} питань успішно згенеровано!"
         )
 
         # Видаляємо тимчасовий файл
@@ -499,9 +499,9 @@ async def generate_ai_test(msg: Message, state: FSMContext, pool: asyncpg.Pool, 
         await state.set_state(AdminFlow.awaiting_ai_test_action)
 
     except Exception as e:
-        await msg.answer(f" ❌   Помилка   при   збереженні   тесту : {e}")
+        await msg.answer(f" ❌   Помилка   при   збереженні   тесту : {e}")
 
-@router.message(StateFilter(AdminFlow.ai_test_menu), F.text == " 🏠  Головне меню")
+@router.message(StateFilter(AdminFlow.ai_test_menu), F.text == " 🏠  Головне меню")
 async def back_to_main_from_ai(msg: Message, state: FSMContext):
     await msg.answer("Головне меню:", reply_markup=kb_main_menu())
     await state.set_state(AdminFlow.main_menu)
@@ -546,9 +546,9 @@ async def handle_document_upload(msg: Message, state: FSMContext, pool: asyncpg.
     doc = msg.document
     try:
         await save_file_to_db(pool, org_id, file_type, doc.file_id, doc.file_name)
-        await msg.answer(f" ✅   Файл  '{doc.file_name}'  успішно   збережено .")
+        await msg.answer(f" ✅   Файл  '{doc.file_name}'  успішно   збережено .")
     except Exception as e:
-        await msg.answer(f" ❌   Сталася   помилка   при   збереженні   файлу : {e}")
+        await msg.answer(f" ❌   Сталася   помилка   при   збереженні   файлу : {e}")
     # Повернення до відповідного меню
     if file_type == "material":
         await state.set_state(AdminFlow.materials_menu)
@@ -574,16 +574,16 @@ async def confirm_delete(callback: CallbackQuery, pool: asyncpg.Pool):
         file = await get_file_by_id(pool, file_id)
         if file:
             await delete_file_by_id(pool, file_id)
-            await callback.message.edit_text(f" ✅   Файл  '{file['filename']}'  успішно   видалено !")
+            await callback.message.edit_text(f" ✅   Файл  '{file['filename']}'  успішно   видалено !")
         else:
-            await callback.message.edit_text(" ❌   Файл   не   знайдено .")
+            await callback.message.edit_text(" ❌   Файл   не   знайдено .")
     except Exception as e:
-        await callback.message.edit_text(f" ❌   Помилка   при   видаленні : {e}")
+        await callback.message.edit_text(f" ❌   Помилка   при   видаленні : {e}")
 
     await callback.answer()
 @router.callback_query(F.data == "cancel_delete")
 async def cancel_delete(callback: CallbackQuery):
-    await callback.message.edit_text(" ❌   Видалення   скасовано .")
+    await callback.message.edit_text(" ❌   Видалення   скасовано .")
     await callback.answer()
 # -----------------------------------------------------------------------------
 # HTTP сервер для Render
@@ -616,7 +616,16 @@ async def main():
         print(f"Не вдалося підключитися до бази даних: {e}")
         return
 
-    await setup_database(pool)
+    # <<< ЗМІНИ ТУТ >>>: Викликаємо створення таблиць після успішного підключення
+    # Це гарантує, що таблиці будуть створені/перевірені при кожному запуску
+    try:
+        await setup_database(pool)
+        print("✅ Перевірка та створення таблиць завершено.")
+    except Exception as e:
+        print(f"❌ Помилка при створенні таблиць: {e}")
+        return
+    # <<< КІНЕЦЬ ЗМІН >>>
+
     bot = Bot(token=BOT_TOKEN)
     dp = Dispatcher(storage=MemoryStorage(), pool=pool)
     dp.include_router(router)
